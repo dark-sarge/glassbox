@@ -26,6 +26,8 @@ type DiagnosticEvent struct {
 	// ParentSequenceID tracks the parent event for nested call relationships.
 	// Zero indicates no parent (top-level event).
 	ParentSequenceID uint64 `json:"parent_sequence_id,omitempty"`
+	// ResourceDiagnostic provides resource diagnostic information for limit exhaustion detection
+	ResourceDiagnostic *ResourceDiagnostic `json:"resource_diagnostic,omitempty"`
 }
 
 // ParseData decodes the base64-encoded XDR Data into an xdr.ScVal
@@ -71,4 +73,5 @@ type CategorizedEvent struct {
 	WasmInstruction          *string  `json:"wasm_instruction,omitempty"`
 	CPU                      *uint64  `json:"cpu,omitempty"`
 	Memory                   *uint64  `json:"memory,omitempty"`
+	ResourceDiagnostic       *ResourceDiagnostic `json:"resource_diagnostic,omitempty"`
 }

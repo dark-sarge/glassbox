@@ -9,6 +9,7 @@ pub mod git_detector;
 pub mod horizon;
 pub mod hsm;
 pub mod ipc;
+pub mod resource_limits;
 pub mod runner;
 pub mod snapshot;
 pub mod source_map_cache;

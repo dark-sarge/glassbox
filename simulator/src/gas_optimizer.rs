@@ -1,12 +1,33 @@
 // Copyright 2026 Erst Users
 // SPDX-License-Identifier: Apache-2.0
 
-use serde::{Deserialize, Serialize};
+use crate::resource_limits::{DEFAULT_CPU_LIMIT, DEFAULT_MEMORY_LIMIT, MAX_OPERATIONS_LIMIT};
+use crate::types::SnapshotMetadata;
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::{SystemTime, UNIX_EPOCH};
 
-// Stellar/Soroban budget limits
-pub const CPU_LIMIT: u64 = 100_000_000; // 100M instructions
-pub const MEMORY_LIMIT: u64 = 50_000_000; // 50M bytes
+// Re-export canonical limits for backward compatibility
+pub use crate::resource_limits::{DEFAULT_CPU_LIMIT as CPU_LIMIT, DEFAULT_MEMORY_LIMIT as MEMORY_LIMIT};
+
+static SNAPSHOT_COUNTER: AtomicU64 = AtomicU64::new(1);
+
+pub fn generate_snapshot_id() -> String {
+    let ts_micros = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_micros() as u64)
+        .unwrap_or(0);
+    let counter = SNAPSHOT_COUNTER.fetch_add(1, Ordering::Relaxed);
+    format!("snap-{ts_micros:016x}-{counter:08x}")
+}
+
+pub fn build_snapshot_metadata(gas_consumed: u64, call_stack_depth: u32) -> SnapshotMetadata {
+    SnapshotMetadata {
+        id: generate_snapshot_id(),
+        gas_consumed,
+        call_stack_depth,
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BudgetMetrics {

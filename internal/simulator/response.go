@@ -77,6 +77,24 @@ type BudgetUsage struct {
 	MemoryUsagePercent float64 `json:"memory_usage_percent"`
 }
 
+// ResourceDiagnostic provides resource diagnostic information for event-level resource tracking
+type ResourceDiagnostic struct {
+	// CPUInstructions consumed at this event point
+	CPUInstructions uint64 `json:"cpu_instructions"`
+	// MemoryBytes consumed at this event point
+	MemoryBytes uint64 `json:"memory_bytes"`
+	// CPULimit being enforced
+	CPULimit uint64 `json:"cpu_limit"`
+	// MemoryLimit being enforced
+	MemoryLimit uint64 `json:"memory_limit"`
+	// CPUExceeded indicates whether CPU limit has been exceeded
+	CPUExceeded bool `json:"cpu_exceeded"`
+	// MemoryExceeded indicates whether memory limit has been exceeded
+	MemoryExceeded bool `json:"memory_exceeded"`
+	// FirstExceeded names the first resource type that exceeded its limit (priority: cpu > memory > operations)
+	FirstExceeded *string `json:"first_exceeded,omitempty"`
+}
+
 // SnapshotsPayload carries optional inline and lazy-resolved snapshot handles
 // returned by the simulator.
 type SnapshotsPayload struct {

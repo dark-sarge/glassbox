@@ -118,6 +118,28 @@ pub struct DiagnosticEvent {
     pub cpu: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mem: Option<u64>,
+    /// Resource diagnostic information for limit exhaustion detection
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub resource_diagnostic: Option<ResourceDiagnostic>,
+}
+
+/// Resource diagnostic information for event-level resource tracking
+#[derive(Debug, Serialize)]
+pub struct ResourceDiagnostic {
+    /// CPU instructions consumed at this event point
+    pub cpu_instructions: u64,
+    /// Memory bytes consumed at this event point
+    pub memory_bytes: u64,
+    /// CPU limit being enforced
+    pub cpu_limit: u64,
+    /// Memory limit being enforced
+    pub memory_limit: u64,
+    /// Whether CPU limit has been exceeded
+    pub cpu_exceeded: bool,
+    /// Whether memory limit has been exceeded
+    pub memory_exceeded: bool,
+    /// First resource type that exceeded its limit (priority: cpu > memory > operations)
+    pub first_exceeded: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
